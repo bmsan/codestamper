@@ -2,6 +2,7 @@ import subprocess
 import os
 import platform
 from datetime import datetime
+import json
 try:
     import pwd # Used to get username if os.getlogin fails
 except ImportError:
@@ -15,6 +16,8 @@ class GitNotFound(Exception):
 class DirtyWorkspace(Exception):
     pass
 
+class LastPushedCommitNA(Exception):
+    pass
 def get_username():
     try:
         return os.getlogin()
@@ -36,13 +39,19 @@ class GitStamp:
     def __init__(self, git_cmd='git') -> None:
         self.git_cmd = git_cmd
    
-    def _git(self, args: List[str]):
+    def _git(self, args: List[str], to_file:str=None):
+        cmd = [self.git_cmd] + args
         try:
-            return subprocess.check_output([self.git_cmd] + args).decode('utf-8')
+            if to_file:
+                with open(to_file, 'w') as fout:
+                    subprocess.run(cmd, stdout=fout)
+            else:
+                return subprocess.check_output(cmd).decode('utf-8')
         except FileNotFoundError as e:
-            print([x for x in dir(e) if not x.startswith('_')])
-            print(e.filename)
-            raise GitNotFound(f'Could not find git executable {e.filename} in system path. You can add it manually using GitStamp(git=/path/to/git)')
+            if e.filename == to_file:
+                raise 
+            else:
+                raise GitNotFound(f'Could not find git executable {e.filename} in system path. You can add it manually using GitStamp(git=/path/to/git)')
     
     def _git_config(self, param: str):
         return self._git(['config', '--get', param])
@@ -82,8 +91,7 @@ class GitStamp:
             if num:
                 raise DirtyWorkspace(f'Encountered {num} untracked files')
 
-    def gen_state_info(self, 
-            modified_as_patch=True, 
+    def get_state_info(self, 
             git_usr=True, 
             node_info=True
         ):
@@ -97,22 +105,63 @@ class GitStamp:
             state['username'] = get_username()
         return state
 
-    def gen_mod_patch(self):
-        patch = self._git(['diff', 'HEAD'])
-    def gen_unpushed_patch():
+    def gen_mod_patch(self, folder, fname='mod.patch'):
+        os.makedirs(folder, exist_ok=True)
+        if fname is None:
+            fname = f'mod.patch'
+        self._git(['diff', 'HEAD'],to_file=os.path.join(folder, fname))
 
 
+    def get_unpushed_start_end(self):
+        push_marker = 'refs/remotes/'
+        lines = self._git(['reflog', '--all']).splitlines()
+        if push_marker in lines[0]:
+            return 
+        end = lines[0].split(' ', 1)[0]
+        start = None
+        for line in lines[1:]:
+            if push_marker in line:
+                start = line.split(' ', 1)[0]
+                break
+        if start is None:
+            raise LastPushedCommitNA('Could not identify last pushed commit.')
+        return start, end
+
+           
+    def gen_unpushed_patch(self, folder, fname=None):
+        os.makedirs(folder, exist_ok=True)
+        start, end = self.get_unpushed_start_end()
+        if fname is None:
+            fname = f'unpushed{start}-{end}.patch'
+        self._git(['diff', start, end], to_file=os.path.join(folder, fname))
+
+    def log_state(self, folder, 
+            modified_as_patch=True, 
+            unpushed_as_patch=False,
+            git_usr=True,
+            node_info=True
+        ):
+        os.makedirs(folder, exist_ok=True)
+        info = self.get_state_info(git_usr, node_info)
+        with open(os.path.join(folder, 'git_state.json'), 'wt') as f:
+            json.dump(info, f, ident=2)
+        self.gen_mod_patch(folder)
+        self.gen_unpushed_patch(folder)
 # 1
 # 2
 # 3
 # 4
 if __name__ == '__main__':
+    GitStamp().log_state('git_log')
+    x = GitStamp().gen_unpushed_patch('gogu.patch')
+    print(x)
+    exit()
     print(GitStamp(git_cmd='/usr/bin/git').modified())
     print(GitStamp().untracked())
     print(GitStamp().untracked(extensions=['af']))
     # GitStamp().raise_if_dirty(modified=False, untracked=['bc'])
 
-    print(GitStamp().gen_state_info())
+    print(GitStamp().get_state_info())
     # GitStamp().raise_if_dirty(modified=True, untracked=True)
     # GitStamp().log_state('log_folder')
     
