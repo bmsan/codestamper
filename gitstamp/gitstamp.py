@@ -103,6 +103,7 @@ class GitStamp:
 
 # 1
 # 2
+# 3
 if __name__ == '__main__':
     print(GitStamp(git_cmd='/usr/bin/git').modified())
     print(GitStamp().untracked())
