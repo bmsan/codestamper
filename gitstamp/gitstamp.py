@@ -102,6 +102,7 @@ class GitStamp:
     def gen_unpushed_patch():
 
 # 1
+# 2
 if __name__ == '__main__':
     print(GitStamp(git_cmd='/usr/bin/git').modified())
     print(GitStamp().untracked())
