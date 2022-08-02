@@ -101,6 +101,7 @@ class GitStamp:
         patch = self._git(['diff', 'HEAD'])
     def gen_unpushed_patch():
 
+# 1
 if __name__ == '__main__':
     print(GitStamp(git_cmd='/usr/bin/git').modified())
     print(GitStamp().untracked())
