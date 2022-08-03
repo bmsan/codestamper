@@ -3,6 +3,8 @@ import os
 import platform
 from datetime import datetime
 import json
+import sys
+
 try:
     import pwd # Used to get username if os.getlogin fails
 except ImportError:
@@ -34,6 +36,14 @@ def get_hostname():
         return platform.node()
     except Exception:
         return None
+
+def pip_packages():
+    out = {}
+    reqs = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze']).decode('utf-8')
+    for line in reqs.splitlines():
+        key, val = line.split('==')
+        out[key] = val
+    return out
 
 class GitStamp:
     def __init__(self, git_cmd='git') -> None:
@@ -93,16 +103,30 @@ class GitStamp:
 
     def get_state_info(self, 
             git_usr=True, 
-            node_info=True
+            node_info=True,
+            python_info=True
         ):
         state = {}
         state['date'] = datetime.now().strftime("%d/%m/%Y %H:%M:%S") 
-        state['hash'] = self.hash()
+        git = state['git'] = {}
+        git['hash'] = self.hash()
         if git_usr:
-            state['git.user'], state['git.email'] = self.git_user_config()
+            git['user'], git['email'] = self.git_user_config()
         if node_info:
-            state['hostname'] = get_hostname()
-            state['username'] = get_username()
+            node = state['node'] = {}
+            node['username'] = get_username()
+            uname = platform.uname()
+            for key in ['node', 'system', 'version', 'release']:
+                try:
+                    val = getattr(uname, key)
+                except Exception:
+                    val = None
+                node[key] = val
+        if python_info:
+            py = state['python'] = {}
+            py['version'] = sys.version
+            
+            py['pip_packages'] = pip_packages()
         return state
 
     def gen_mod_patch(self, folder, fname='mod.patch'):
@@ -116,7 +140,7 @@ class GitStamp:
         push_marker = 'refs/remotes/'
         lines = self._git(['reflog', '--all']).splitlines()
         if push_marker in lines[0]:
-            return 
+            return None, None
         end = lines[0].split(' ', 1)[0]
         start = None
         for line in lines[1:]:
@@ -133,18 +157,20 @@ class GitStamp:
         start, end = self.get_unpushed_start_end()
         if fname is None:
             fname = f'unpushed{start}-{end}.patch'
-        self._git(['diff', start, end], to_file=os.path.join(folder, fname))
+        if start:
+            self._git(['diff', start, end], to_file=os.path.join(folder, fname))
 
     def log_state(self, folder, 
             modified_as_patch=True, 
             unpushed_as_patch=False,
             git_usr=True,
-            node_info=True
+            node_info=True,
+            python_info=True
         ):
         os.makedirs(folder, exist_ok=True)
-        info = self.get_state_info(git_usr, node_info)
-        with open(os.path.join(folder, 'git_state.json'), 'wt') as f:
-            json.dump(info, f, ident=2)
+        info = self.get_state_info(git_usr, node_info, python_info)
+        with open(os.path.join(folder, 'code_state.json'), 'wt') as f:
+            json.dump(info, f, indent=2)
         self.gen_mod_patch(folder)
         self.gen_unpushed_patch(folder)
 # 1
