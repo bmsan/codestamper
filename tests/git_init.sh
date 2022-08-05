@@ -5,6 +5,9 @@ touch file2.py
 touch file3.json
 
 git init
+git config user.name "Test Bot"
+git config user.email "Testing@git.stamp"
+
 git add file1.py
 git add file2.py
 
@@ -13,6 +16,7 @@ git commit -m "c1"
 echo mod1 >> file1.py
 
 git add  file1.py
+
 git commit -m "c2"
 
 ### 2 commits clean workspace
