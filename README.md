@@ -1,21 +1,23 @@
 # GitStamp
 
-Gitstamp aims to help the user to ensure traceability(and reproduceability) between ML experiments and code.
+Gitstamp aims to help the user in ensuring traceability between ML experiments and code.
 
 ## Description
 When running ML experiments one would want to be able to replicate a past experiment at any point in time. One aspect to achieve this(although not the only one) is to be able to run the exact same code version.
 
-Ideally the code for an experiment is versioned under a commit. In real life in certain situations accidents might happen:
+### When things go wrong. An ML experiment is started but it might not be  reproducible in the future because:
+ - The experiment does not contain any information related to the code with which it was produced
  - Code modifications were staged but not commited
  - One modified file was missed when commiting
  - The code is commited, but the code never gets pushed 
- - Even if all the code is versioned re-running the same experiment 8 months from now might not work the same because the the implementation/API of the imported packages has changed 
-
+ - The experiment does not contain exact information related to the python enviroment used. Even if all the code is versioned re-running the same experiment 8 months from now might not work the same if the python package versions have changed(APIs/implementations of different algorithms might have changed). 
+ 
 Gitstamp to the rescue. It can:
-- Prevent running experiments before having all the local modifications versioned on git.
+- Log information related to last git commit
 - Log any local changes not caught in a commit.
 - Log contents of commits not already Pushed
 - Log current python enviroment state
+- Prevent running experiments before having all the local modifications versioned on git.
 
 ## Examples
 
@@ -40,7 +42,7 @@ GitStamp().log_state('./experiment/code_log', modified_as_patch=True, unpushed_a
   "date": "03/08/2022 21:10:34",
   "git": {
     "hash": "75c88ba",
-    "user": "bmsanusername",
+    "user": "git-usernmae",
     "email": "your-email-here@gmail.com"
   },
   "node": {
