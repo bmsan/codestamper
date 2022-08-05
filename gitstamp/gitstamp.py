@@ -122,7 +122,7 @@ class GitStamp:
 
     def hash(self):
         """Returns the hash of the latest commit"""
-        return self._git(["rev-parse", "--short", "HEAD"])
+        return self._git(["rev-parse", "--short", "HEAD"]).strip()
 
     def create_patch(self, out_fname):
         patch = self._git(["diff", "HEAD"])
