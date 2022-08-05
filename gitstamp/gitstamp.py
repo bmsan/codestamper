@@ -15,15 +15,15 @@ from typing import List, Union, Dict, Tuple
 
 
 class GitNotFound(Exception):
-    pass
+    """Raised when git executable is not found"""
 
 
 class DirtyWorkspace(Exception):
-    pass
+    """Git Workspace contains modified files and/or untracked files"""
 
 
 class LastPushedCommitNA(Exception):
-    pass
+    """Cannot find a commit in history that is in sync with the git remote repo"""
 
 
 def get_username():
@@ -97,7 +97,8 @@ class GitStamp:
                 raise
             else:
                 raise GitNotFound(
-                    f"Could not find git executable {e.filename} in system path. You can add it manually using GitStamp(git=/path/to/git)"
+                    f"Could not find git executable {e.filename} in system path"
+                    + "You can add it manually using GitStamp(git=/path/to/git)"
                 ) from e
 
     def _git_config(self, param: str):
@@ -211,7 +212,7 @@ class GitStamp:
         """Generate a diff(patch) between the workspace and the last commit."""
         os.makedirs(folder, exist_ok=True)
         if fname is None:
-            fname = f"mod.patch"
+            fname = "mod.patch"
         self._git(["diff", "HEAD"], to_file=os.path.join(folder, fname))
 
     def get_unpushed_start_end(self) -> Tuple[str, str]:
@@ -265,7 +266,8 @@ class GitStamp:
         modified_as_patch, optional
             Save code modifications(since last commit) as a patch file [mod.patch], by default True
         unpushed_as_patch, optional
-            Save code modifications of unpushed commits as patch file [unpushed<hash1>-<hash2>.patch], by default False
+            Save code modifications of unpushed commits as patch file
+            [unpushed<hash1>-<hash2>.patch], by default False
         git_usr, optional
             Save git info related to current git user, by default True
         node_info, optional
@@ -277,32 +279,9 @@ class GitStamp:
         info = self.get_state_info(git_usr, node_info, python_info)
         with open(os.path.join(folder, "code_state.json"), "wt") as f:
             json.dump(info, f, indent=2)
-        
+
         if modified_as_patch:
             self.gen_mod_patch(folder)
-        
+
         if unpushed_as_patch:
             self.gen_unpushed_patch(folder)
-
-
-# 1
-# 2
-# 3
-# 4
-
-
-if __name__ == "__main__":
-    GitStamp().log_state("git_log")
-    x = GitStamp().gen_unpushed_patch("gogu.patch")
-    print(x)
-    exit()
-    print(GitStamp(git_cmd="/usr/bin/git").modified())
-    print(GitStamp().untracked())
-    print(GitStamp().untracked(extensions=["af"]))
-    # GitStamp().raise_if_dirty(modified=False, untracked=['bc'])
-
-    print(GitStamp().get_state_info())
-    # GitStamp().raise_if_dirty(modified=True, untracked=True)
-    # GitStamp().log_state('log_folder')
-
-    # print(untracked, untracked.splitlines())
