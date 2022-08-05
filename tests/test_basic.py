@@ -1,5 +1,5 @@
 import pytest
-from gitstamp import GitStamp, GitNotFound
+from gitstamp import GitStamp, GitNotFound, DirtyWorkspace, LastPushedCommitNA
 import os
 import subprocess
 import shutil
@@ -16,7 +16,6 @@ def run_cmd(cmd):
 
 def get_commit_msg(hash):
     return run_cmd(["git", "log", "-1", '--pretty="%s"', hash]).strip()
-    # git log --pretty=format":%s" 93f41f90daba6ee31907d5f83eb52bd3bf3ee7c9
 
 
 def test_git_not_found():
@@ -50,3 +49,21 @@ def test_B(git_env1):
     msg = get_commit_msg(commit_id)
     print(commit_id, msg)
     assert msg == '"c2"'
+
+    assert len(stamp.modified()) == 0
+    assert len(stamp.untracked()) == 1
+
+    info = stamp.get_state_info()
+    assert info["git"]["hash"] == commit_id
+
+    with pytest.raises(DirtyWorkspace):
+        stamp.raise_if_dirty()
+
+    stamp.raise_if_dirty(untracked=False)
+
+    stamp.log_state("./state")
+    assert os.path.exists("./state/mod.patch")
+    assert os.path.exists("./state/code_state.json")
+
+    with pytest.raises(LastPushedCommitNA):
+        stamp.log_state("./state", unpushed_as_patch=True)

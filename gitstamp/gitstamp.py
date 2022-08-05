@@ -58,7 +58,7 @@ def pip_packages() -> Dict[str, str]:
         "utf-8"
     )
     for line in reqs.splitlines():
-        key, val = line.split("==")
+        key, val = (line, None) if "==" not in line else line.split("==")
         out[key] = val
     return out
 
@@ -112,7 +112,7 @@ class GitStamp:
         -------
             Parameter value
         """
-        return self._git(["config", "--get", param])
+        return self._git(["config", "--get", param]).strip()
 
     def git_user_config(self):
         """Returns the username and email of the current git user"""
@@ -151,6 +151,7 @@ class GitStamp:
         ----------
         modified, optional
             check for modified but uncommited files, by default True
+
         untracked, optional
             check for untracked git files, by default True
 
@@ -276,8 +277,12 @@ class GitStamp:
         info = self.get_state_info(git_usr, node_info, python_info)
         with open(os.path.join(folder, "code_state.json"), "wt") as f:
             json.dump(info, f, indent=2)
-        self.gen_mod_patch(folder)
-        self.gen_unpushed_patch(folder)
+        
+        if modified_as_patch:
+            self.gen_mod_patch(folder)
+        
+        if unpushed_as_patch:
+            self.gen_unpushed_patch(folder)
 
 
 # 1

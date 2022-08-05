@@ -1,1 +1,1 @@
-from .gitstamp import GitStamp, GitNotFound, DirtyWorkspace
+from .gitstamp import GitStamp, GitNotFound, DirtyWorkspace, LastPushedCommitNA
