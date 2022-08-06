@@ -90,16 +90,16 @@ class GitStamp:
         try:
             if not to_file:
                 return subprocess.check_output(cmd).decode("utf-8")
-            with open(to_file, "w") as fout:
-                subprocess.run(cmd, stdout=fout)
+            with open(to_file, "w", encoding="utf-8") as fout:
+                subprocess.run(cmd, stdout=fout, check=True)
+                return None
         except FileNotFoundError as e:
             if e.filename == to_file:
                 raise
-            else:
-                raise GitNotFound(
-                    f"Could not find git executable {e.filename} in system path"
-                    + "You can add it manually using GitStamp(git=/path/to/git)"
-                ) from e
+            raise GitNotFound(
+                f"Could not find git executable {e.filename} in system path"
+                + "You can add it manually using GitStamp(git=/path/to/git)"
+            ) from e
 
     def _git_config(self, param: str):
         """Return the value of the param argument from the git config
@@ -127,7 +127,7 @@ class GitStamp:
 
     def create_patch(self, out_fname):
         patch = self._git(["diff", "HEAD"])
-        with open(out_fname, "wt") as f:
+        with open(out_fname, "wt", encoding="utf-8") as f:
             f.write(patch)
 
     def modified(self):
@@ -198,14 +198,14 @@ class GitStamp:
             for key in ["node", "system", "version", "release"]:
                 try:
                     val = getattr(uname, key)
-                except Exception:
+                except AttributeError():
                     val = None
                 node[key] = val
         if python_info:
-            py = state["python"] = {}
-            py["version"] = sys.version
+            py_info = state["python"] = {}
+            py_info["version"] = sys.version
 
-            py["pip_packages"] = pip_packages()
+            py_info["pip_packages"] = pip_packages()
         return state
 
     def gen_mod_patch(self, folder, fname="mod.patch"):
@@ -244,7 +244,7 @@ class GitStamp:
         if start:
             self._git(["diff", start, end], to_file=os.path.join(folder, fname))
 
-    def log_state(
+    def log_state(  # pylint: disable=R0913
         self,
         folder,
         modified_as_patch=True,
@@ -277,7 +277,7 @@ class GitStamp:
         """
         os.makedirs(folder, exist_ok=True)
         info = self.get_state_info(git_usr, node_info, python_info)
-        with open(os.path.join(folder, "code_state.json"), "wt") as f:
+        with open(os.path.join(folder, "code_state.json"), "wt", encoding="utf-8") as f:
             json.dump(info, f, indent=2)
 
         if modified_as_patch:
