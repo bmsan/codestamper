@@ -125,15 +125,39 @@ class GitStamp:
         """Returns the hash of the latest commit"""
         return self._git(["rev-parse", "--short", "HEAD"]).strip()
 
-    def create_patch(self, out_fname):
+    def create_patch(self, out_fname: str):
+        """Creates a git patch file containing the difference between the
+            workspace and last commit
+
+        Parameters
+        ----------
+        out_fname
+            Name of the output file
+        """
         patch = self._git(["diff", "HEAD"])
         with open(out_fname, "wt", encoding="utf-8") as f:
             f.write(patch)
 
-    def modified(self):
+    def modified(self) -> List[str]:
+        """
+        Returns
+        -------
+            A list of filenames which are modified from the last commit
+        """
         return self._git(["ls-files", "-m"]).splitlines()
 
     def untracked(self, extensions: List[str] = None):
+        """Returns a list of untracked files
+
+        Parameters
+        ----------
+        extensions, optional
+            List of targeted extensions. If None returns all untracked files, by default None
+
+        Returns
+        -------
+            List of untracked fields
+        """
         if isinstance(extensions, str):
             extensions = [extensions]
         fnames = self._git(["ls-files", "-o", "--exclude-standard"]).splitlines()
@@ -154,7 +178,9 @@ class GitStamp:
             check for modified but uncommited files, by default True
 
         untracked, optional
-            check for untracked git files, by default True
+            check for untracked git files.
+            it can receive a list of targeted file extensions which can be given to it,
+            by default True
 
         Raises
         ------

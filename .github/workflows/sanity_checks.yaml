@@ -45,7 +45,7 @@ jobs:
 
       - name: Pylint
         run: |
-          pylint --fail-under=9.5 gitstamp
+          pylint --fail-under=9.7 gitstamp
         if: always()
 
       - name: Coverage
