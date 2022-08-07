@@ -1,6 +1,6 @@
 # CodeStamp
 
-Gitstamp aims to help the user in ensuring traceability between ML experiments and code.
+Codestamp aims to help the user in ensuring traceability between ML experiments and code.
 
 ## Description
 When running ML experiments one would want to be able to replicate a past experiment at any point in time. One aspect to achieve this(although not the only one) is to be able to run the exact same code version.
