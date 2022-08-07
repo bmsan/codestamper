@@ -3,11 +3,11 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open("requirements.txt", "r") as f:
-    requirements = f.read().splitlines()
+# with open("requirements.txt", "r") as f:
+#    requirements = f.read().splitlines()
 
 setuptools.setup(
-    name="gitstamp",
+    name="codestamp",
     version="0.1.0",
     author="Bogdan Sandoi",
     author_email="bogdan.sandoi@gmail.com",
@@ -20,7 +20,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.8",
-    install_requires=requirements,
-    url="https://github.com/bmsan/gitstamp",
+    python_requires=">=3.7",
+    # install_requires=requirements,
+    url="https://github.com/bmsan/codestamp",
 )
