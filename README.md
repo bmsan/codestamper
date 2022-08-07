@@ -1,4 +1,4 @@
-# GitStamp
+# CodeStamp
 
 Gitstamp aims to help the user in ensuring traceability between ML experiments and code.
 
@@ -12,7 +12,7 @@ When running ML experiments one would want to be able to replicate a past experi
  - The code is commited, but the code never gets pushed 
  - The experiment does not contain exact information related to the python enviroment used. Even if all the code is versioned re-running the same experiment 8 months from now might not work the same if the python package versions have changed(APIs/implementations of different algorithms might have changed). 
  
-Gitstamp to the rescue. It can:
+Codestamp to the rescue. It can:
 - Log information related to last git commit
 - Log any local changes not caught in a commit.
 - Log contents of commits not already Pushed
@@ -23,11 +23,15 @@ Gitstamp to the rescue. It can:
 
 ### Enforce a clean workspace
 ```py
+from codestamp import Gitstamp
+
 GitStamp().raise_if_dirty()
 ```
 
 ### Log the current code state
 ```py
+from codestamp import Gitstamp
+
 GitStamp().log_state('./experiment/code_log', modified_as_patch=True, unpushed_as_patch=True)
 ```
 ```
