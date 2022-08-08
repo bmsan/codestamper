@@ -19,6 +19,11 @@ PyStamp to the rescue. It can:
 - Log current python enviroment state
 - Prevent running experiments before having all the local modifications versioned on git.
 
+## Installing
+
+```bash
+pip install pystamp
+```
 ## Examples
 
 ### Enforce a clean workspace
