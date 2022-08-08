@@ -3,8 +3,8 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-# with open("requirements.txt", "r") as f:
-#    requirements = f.read().splitlines()
+with open("requirements.txt", "r") as f:
+    requirements = f.read().splitlines()
 
 setuptools.setup(
     name="codestamper",
@@ -21,6 +21,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.7",
-    # install_requires=requirements,
+    install_requires=requirements,
     url="https://github.com/bmsan/codestamper",
 )
