@@ -45,12 +45,12 @@ jobs:
 
       - name: Pylint
         run: |
-          pylint --fail-under=9.7 pystamp
+          pylint --fail-under=9.7 codestamper
         if: always()
 
       - name: Coverage
         run: |
-          pytest --cov=pystamp --cov-report=xml
+          pytest --cov=codestamper --cov-report=xml
         if: always()
       - uses: codecov/codecov-action@v1
         with:

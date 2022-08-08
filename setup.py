@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 #    requirements = f.read().splitlines()
 
 setuptools.setup(
-    name="pystamp",
+    name="codestamper",
     version="0.1.0",
     author="Bogdan Sandoi",
     author_email="bogdan.sandoi@gmail.com",
@@ -22,5 +22,5 @@ setuptools.setup(
     ],
     python_requires=">=3.7",
     # install_requires=requirements,
-    url="https://github.com/bmsan/pystamp",
+    url="https://github.com/bmsan/codestamper",
 )

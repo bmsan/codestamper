@@ -1,5 +1,5 @@
 import pytest
-from pystamp import GitStamp, GitNotFound, DirtyWorkspace, LastPushedCommitNA
+from codestamper import GitStamp, GitNotFound, DirtyWorkspace, LastPushedCommitNA
 import os
 import subprocess
 import shutil
