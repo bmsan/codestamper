@@ -44,6 +44,8 @@ GitStamp().log_state('./experiment/code_log', modified_as_patch=True, unpushed_a
 |--🗎 code_state.json
 |--🗎 mod.patch
 |--🗎 unpushed<git-commit>-<git-commit>.patch
+|--🗎 pip-packages.txt
+|--🗎 conda_env.yaml
 ```
 - code_state.json
 ```json
