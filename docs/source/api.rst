@@ -4,8 +4,10 @@ Documentation
 API
 -----------
 
-.. automodule:: codestamper 
+.. automodule:: codestamper
     :members:
+    :imported-members:
+
     :show-inheritance:
 
 Internal Documentation

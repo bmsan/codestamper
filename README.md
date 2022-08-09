@@ -70,7 +70,7 @@ GitStamp().log_state('./experiment/code_log', modified_as_patch=True, unpushed_a
     "pip_packages": {
       "argon2-cffi": "21.3.0",
       "argon2-cffi-bindings": "21.2.0",
-        .....
+        
     }
   }
 }
