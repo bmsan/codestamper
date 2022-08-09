@@ -1,19 +1,18 @@
 import contextlib
-import subprocess
 import os
 import platform
 from datetime import datetime
 import json
 import sys
-from .gitutils import Git, GitNotFound, LastPushedCommitNA
 
 try:
     import pwd  # Used to get username if os.getlogin fails
 except ImportError:
     pass
 
-from typing import List, Union, Tuple
+from typing import List, Union
 from .pythonenv import PipEnv, CondaEnv
+from .gitutils import Git
 
 
 class DirtyWorkspace(Exception):

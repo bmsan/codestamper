@@ -124,8 +124,7 @@ class Git:
                 fname = f"unpushed{start}-{end}.patch"
             to_file = os.path.join(out_folder, fname)
 
-        if start:
-            return self.cmd(["diff", start, end], to_file=to_file)
+        return self.cmd(["diff", start, end], to_file=to_file) if start else None
 
     def get_unpushed_start_end(self) -> Tuple[str, str]:
         """Returns the hash of the last pushed commit & the last unpushed commit
