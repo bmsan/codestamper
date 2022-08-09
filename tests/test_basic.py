@@ -1,5 +1,5 @@
 import pytest
-from pystamp import GitStamp, GitNotFound, DirtyWorkspace, LastPushedCommitNA
+from codestamper import GitStamp, GitNotFound, DirtyWorkspace, LastPushedCommitNA
 import os
 import subprocess
 import shutil
@@ -64,6 +64,7 @@ def test_B(git_env1):
     stamp.log_state("./state")
     assert os.path.exists("./state/mod.patch")
     assert os.path.exists("./state/code_state.json")
+    assert os.path.exists("./state/pip-packages.txt")
 
     with pytest.raises(LastPushedCommitNA):
         stamp.log_state("./state", unpushed_as_patch=True)

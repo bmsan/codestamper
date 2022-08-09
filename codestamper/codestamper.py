@@ -11,7 +11,8 @@ try:
 except ImportError:
     pass
 
-from typing import List, Union, Dict, Tuple
+from typing import List, Union, Tuple
+from .pythonenv import PipEnv, CondaEnv
 
 
 class GitNotFound(Exception):
@@ -40,32 +41,20 @@ def get_username():
 
 
 def get_hostname():
+    """Retrivies node hostname"""
     try:
         return platform.node()
     except Exception:
         return None
 
 
-def pip_packages() -> Dict[str, str]:
-    """Get pip packages & versions
-
-    Returns
-    -------
-        Dictionary of python packages and versions
-    """
-    out = {}
-    reqs = subprocess.check_output([sys.executable, "-m", "pip", "freeze"]).decode(
-        "utf-8"
-    )
-    for line in reqs.splitlines():
-        key, val = (line, None) if "==" not in line else line.split("==")
-        out[key] = val
-    return out
-
-
 class GitStamp:
+    """Provides ways of logging & retriving data related to Workspace state & python env"""
+
     def __init__(self, git_cmd: str = "git") -> None:
         self.git_cmd = git_cmd
+        self.pip = PipEnv()
+        self.conda = CondaEnv()
 
     def _git(self, args: List[str], to_file: str = None):
         """Run a git command.
@@ -195,7 +184,9 @@ class GitStamp:
             if num := self.untracked(extensions):
                 raise DirtyWorkspace(f"Encountered {num} untracked files")
 
-    def get_state_info(self, git_usr=True, node_info=True, python_info=True):
+    def get_state_info(
+        self, git_usr=True, node_info=True, pip_info=True, conda_info=True
+    ):
         """Returns information related to:
           - git state
           - node(machine) state
@@ -211,8 +202,7 @@ class GitStamp:
             Include information related to the python env, by default True
 
         """
-        state = {}
-        state["date"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        state = {"date": datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
         git = state["git"] = {}
         git["hash"] = self.hash()
         if git_usr:
@@ -227,11 +217,15 @@ class GitStamp:
                 except AttributeError():
                     val = None
                 node[key] = val
-        if python_info:
-            py_info = state["python"] = {}
-            py_info["version"] = sys.version
 
-            py_info["pip_packages"] = pip_packages()
+        py_info = state["python"] = {}
+        py_info["version"] = sys.version
+
+        if pip_info:
+            py_info["pip_packages"] = self.pip.get_env_info()
+        if conda_info and self.conda.activated:
+            py_info["conda"] = self.conda.get_env_info()
+
         return state
 
     def gen_mod_patch(self, folder, fname="mod.patch"):
@@ -277,7 +271,8 @@ class GitStamp:
         unpushed_as_patch=False,
         git_usr=True,
         node_info=True,
-        python_info=True,
+        pip_info=True,
+        conda_info=True,
     ):
         """Logs Code & Env State.
         Generates a folder containing logged information.
@@ -298,11 +293,13 @@ class GitStamp:
             Save git info related to current git user, by default True
         node_info, optional
             Save information related to the machine that the code is running on, by default True
-        python_info, optional
-            Save information related to python version & packages, by default True
+        pip_info, optional
+            Information related to python packages gathered through pip, by default True
+        conda_info, optional
+            Information related to python packages in conda envs, by default True
         """
         os.makedirs(folder, exist_ok=True)
-        info = self.get_state_info(git_usr, node_info, python_info)
+        info = self.get_state_info(git_usr, node_info, pip_info, conda_info)
         with open(os.path.join(folder, "code_state.json"), "wt", encoding="utf-8") as f:
             json.dump(info, f, indent=2)
 
@@ -311,3 +308,8 @@ class GitStamp:
 
         if unpushed_as_patch:
             self.gen_unpushed_patch(folder)
+
+        if pip_info:
+            self.pip.save_raw(os.path.join(folder, "pip-packages.txt"))
+        if conda_info and self.conda.activated:
+            self.conda.save_raw(os.path.join(folder, "conda_env.yaml"))
