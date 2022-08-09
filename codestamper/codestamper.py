@@ -11,7 +11,7 @@ try:
 except ImportError:
     pass
 
-from typing import List, Union, Dict, Tuple
+from typing import List, Union, Tuple
 from .pythonenv import PipEnv, CondaEnv
 
 
@@ -41,6 +41,7 @@ def get_username():
 
 
 def get_hostname():
+    """Retrivies node hostname"""
     try:
         return platform.node()
     except Exception:
@@ -48,6 +49,8 @@ def get_hostname():
 
 
 class GitStamp:
+    """Provides ways of logging & retriving data related to Workspace state & python env"""
+
     def __init__(self, git_cmd: str = "git") -> None:
         self.git_cmd = git_cmd
         self.pip = PipEnv()

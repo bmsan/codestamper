@@ -1,36 +1,46 @@
 import os
-import subprocess
-import yaml
-from typing import Protocol
 import sys
+import subprocess
+from abc import ABC, abstractmethod
+import yaml
 
 
-class Env:
+class Env(ABC):
+    """Base Class for python Enviroment extractors."""
+
     def __init__(self):
         self.raw = ""
         self.parsed = {}
         self._loaded = False
         self.active = False
 
+    @abstractmethod
     def load_env(self):
+        """Extract env information"""
         if self._loaded:
             return
         self._loaded = True
 
     def save_raw(self, fname):
+        """Save env information to file"""
         self.load_env()
         with open(fname, "wt", encoding="utf-8") as f:
             f.write(self.raw)
 
-    def get_env_info(self):
+    def get_env_info(self) -> dict:
+        """Get env information"""
         self.load_env()
         return self.parsed
 
 
 class CondaEnv(Env):
+    """Retrives Conda package information"""
+
     def __init__(self) -> None:
         super().__init__()
         self.activated = os.environ.get("CONDA_PREFIX", None) is not None
+        self.pip_deps = None
+        self.conda_deps = None
 
     def load_env(self):
         super().load_env()
@@ -73,8 +83,7 @@ class CondaEnv(Env):
 
 
 class PipEnv(Env):
-    def __init__(self):
-        super().__init__()
+    """Retrives python package information from PIP"""
 
     def load_env(self):
         super().load_env()
