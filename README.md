@@ -8,18 +8,14 @@ CodeStamper aims to help the user in ensuring traceability between ML experiment
 When running ML experiments one would want to be able to replicate a past experiment at any point in time. One aspect to achieve this(although not the only one) is to be able to run the exact same code version.
 
 ### 1.1.1. When things go wrong. An ML experiment is started but it might not be  reproducible in the future because:
- - The experiment does not contain any information related to the code with which it was produced
- - Code modifications were staged but not commited
- - One modified file was missed when commiting
- - The code is commited, but the code never gets pushed 
- - The experiment does not contain exact information related to the python enviroment used. Even if all the code is versioned re-running the same experiment 8 months from now might not work the same if the python package versions have changed(APIs/implementations of different algorithms might have changed). 
- 
-CodeStamper to the rescue. It can:
-- Log information related to last git commit
-- Log any local changes not caught in a commit.
-- Log contents of commits not already Pushed
-- Log current python enviroment state
-- Prevent running experiments before having all the local modifications versioned on git.
+
+| Issue                                                                                                                                                                                                                                                                                                                   | CodeStamper's solution                                                                                                                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The experiment does not contain any information related to the code with which it was produced                                                                                                                                                                                                                          | ✅ Logs information related to last git commit                                                                                                                                       |
+| Code modifications were staged but not commited or not all modified files were commited                                                                                                                                                                                                                                 | ✅ Logs any local changes not caught in a commit as patches that can be restored. <br> ✅ Can prevent running experiments before having all the local modifications versioned on git. |
+| The code is commited, but the code never gets pushed                                                                                                                                                                                                                                                                    | ✅Can log contents of commits not already Pushed                                                                                                                                     |
+| The experiment does not contain exact information related to the python enviroment used.  <br> Even if all the code is versioned re-running the same experiment 8 months from now might not work the same if the python package versions have changed(APIs/implementations of different algorithms might have changed). | ✅ Logs current python environment state                                                                                                                                             |
+|                                                                                                                                                                                                                                                                                                                         |                                                                                                                                                                                     |
 
 ## 1.2. Installing
 

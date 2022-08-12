@@ -55,10 +55,10 @@ class GitStamp:
 
         Parameters
         ----------
-        modified, optional
+        modified
             check for modified but uncommited files, by default True
 
-        untracked, optional
+        untracked
             check for untracked git files.
             it can receive a list of targeted file extensions which can be given to it,
             by default True
@@ -86,12 +86,14 @@ class GitStamp:
 
         Parameters
         ----------
-        git_usr, optional
+        git_usr
             Include information related to the current git user, by default True
-        node_info, optional
+        node_info
             Include information related to the current machine, by default True
-        python_info, optional
-            Include information related to the python env, by default True
+        pip_info
+            Information related to python packages gathered through pip, by default True
+        conda_info
+            Information related to python packages in conda envs, by default True
 
         """
         state = {"date": datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
@@ -140,18 +142,18 @@ class GitStamp:
         ----------
         folder
             Folder where the state is logged
-        modified_as_patch, optional
+        modified_as_patch
             Save code modifications(since last commit) as a patch file [mod.patch], by default True
-        unpushed_as_patch, optional
+        unpushed_as_patch
             Save code modifications of unpushed commits as patch file
             [unpushed<hash1>-<hash2>.patch], by default False
-        git_usr, optional
+        git_usr
             Save git info related to current git user, by default True
-        node_info, optional
+        node_info
             Save information related to the machine that the code is running on, by default True
-        pip_info, optional
+        pip_info
             Information related to python packages gathered through pip, by default True
-        conda_info, optional
+        conda_info
             Information related to python packages in conda envs, by default True
         """
         os.makedirs(folder, exist_ok=True)

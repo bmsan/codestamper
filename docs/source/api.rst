@@ -1,26 +1,34 @@
 Documentation
 =================
 
-API
------------
-
-.. automodule:: codestamper
+High Level API
+-----------------
+.. autoclass:: codestamper.GitStamp
     :members:
-    :imported-members:
 
-    :show-inheritance:
+.. autoexception:: codestamper.DirtyWorkspace
+.. autoexception:: codestamper.GitNotFound
+.. autoexception:: codestamper.LastPushedCommitNA
 
-Internal Documentation
+
+Low Level API
 -----------------------
 
-.. .. automodule:: dictgest.cast
-..     :members:
-..     :show-inheritance:
+.. autoclass:: codestamper.pythonenv.PipEnv
+    :members:
+    :inherited-members:
+    :show-inheritance:
 
-.. .. automodule:: dictgest.serdes
-..     :members:
-..     :show-inheritance:
+.. autoclass:: codestamper.pythonenv.CondaEnv
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+.. autoclass:: codestamper.pythonenv.Env
+    :members:
+    :show-inheritance:
 
 
-
-
+.. autoclass:: codestamper.gitutils.Git
+    :members:
+    :show-inheritance:
