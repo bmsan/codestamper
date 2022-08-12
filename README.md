@@ -4,8 +4,8 @@
 
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=bmsan_codestamper&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=bmsan_codestamper)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=bmsan_codestamper&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=bmsan_codestamper)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bmsan_codestampert&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=bmsan_codestamper)
-[![Code Coverage](https://codecov.io/gh/bmsan/codestamper/branch/main/graph/badge.svg?token=WHTIAW8C85)](https://codecov.io/gh/bmsan/codestamper)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bmsan_codestamper&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=bmsan_codestamper)
+[![Code Coverage](https://codecov.io/gh/bmsan/codestamper/branch/main/graph/badge.svg?token=0UPE6C3S7W)](https://codecov.io/gh/bmsan/codestamper)
 [![CI status](https://github.com/bmsan/codestamper/workflows/CI/badge.svg)](https://github.com/bmsan/codestamper/actions?queryworkflow%3ACI+event%3Apush+branch%3Amain)
 [![Docs](https://readthedocs.org/projects/codestamper/badge/?version=latest)](https://readthedocs.org/projects/codestamper)
 ![Pylint](https://img.shields.io/badge/Pylint->=9.90/10-green)
