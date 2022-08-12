@@ -1,6 +1,6 @@
 # CodeStamper
 
-![](https://github.com/bmsan/codestamper/blob/main/docs/source/CodeStamper.png)
+![](https://raw.githubusercontent.com/bmsan/codestamper/main/docs/source/CodeStamper.png)
 
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=bmsan_codestamper&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=bmsan_codestamper)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=bmsan_codestamper&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=bmsan_codestamper)
