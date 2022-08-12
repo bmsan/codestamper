@@ -24,23 +24,15 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - uses: s-weigand/setup-conda@v1
+      - run: conda --version
+      - run: which python
 
       - name: Switch to Current Branch
         run: git checkout ${{ env.BRANCH }}
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Conda init
-        run: |
-          $CONDA/bin/conda init 
-          $CONDA/bin/conda activate base
 
       - name: Install dependencies
         run: |
