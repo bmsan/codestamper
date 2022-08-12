@@ -1,7 +1,5 @@
 # CodeStamper
 
-![](https://github.com/bmsan/codestamper/blob/main/docs/source/CodeStamper.png)
-
 CodeStamper aims to help the user in ensuring traceability between ML experiments and code.
 
 

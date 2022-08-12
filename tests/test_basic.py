@@ -45,13 +45,13 @@ def git_env1(monkeypatch: pytest.MonkeyPatch):
 
 def test_B(git_env1):
     stamp = GitStamp()
-    commit_id = stamp.hash()
+    commit_id = stamp.git.get_hash()
     msg = get_commit_msg(commit_id)
     print(commit_id, msg)
     assert msg == '"c2"'
 
-    assert len(stamp.modified()) == 0
-    assert len(stamp.untracked()) == 1
+    assert len(stamp.git.modified()) == 0
+    assert len(stamp.git.untracked()) == 1
 
     info = stamp.get_state_info()
     assert info["git"]["hash"] == commit_id
