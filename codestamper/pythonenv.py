@@ -69,7 +69,9 @@ class CondaEnv(Env):
         self.conda_deps = conda_deps
         self.pip_deps = pip_deps
 
+
     def get_env_info(self):
+        self.load_env()
         return (
             {
                 "name": self.parsed["name"],
