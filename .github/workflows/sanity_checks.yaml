@@ -34,7 +34,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Activate conda
-        run: $CONDA/bin/conda activate base
+        run: |
+          $CONDA/bin/conda init bash 
+          $CONDA/bin/conda activate base
 
       - name: Install dependencies
         run: |
