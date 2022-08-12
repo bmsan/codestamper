@@ -13,9 +13,6 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
-    strategy:
-      matrix:
-        python-version: [3.9, "3.10"]
     runs-on: ubuntu-latest
 
     defaults:
