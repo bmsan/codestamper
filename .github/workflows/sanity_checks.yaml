@@ -39,6 +39,7 @@ jobs:
 
       - name: Conda init
         run: |
+          $CONDA/bin/conda init 
           $CONDA/bin/conda activate base
 
       - name: Install dependencies
