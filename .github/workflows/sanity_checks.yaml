@@ -18,6 +18,10 @@ jobs:
         python-version: [3.9, "3.10"]
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        shell: bash -l {0}
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout
@@ -33,9 +37,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Activate conda
+      - name: Conda init
         run: |
-          $CONDA/bin/conda init bash 
           $CONDA/bin/conda activate base
 
       - name: Install dependencies
