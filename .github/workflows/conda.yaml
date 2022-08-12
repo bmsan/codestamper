@@ -13,25 +13,23 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
-    strategy:
-      matrix:
-        python-version: [3.9, "3.10"]
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash -l {0}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - uses: s-weigand/setup-conda@v1
+      - run: conda --version
+      - run: which python
 
       - name: Switch to Current Branch
         run: git checkout ${{ env.BRANCH }}
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
@@ -41,6 +39,11 @@ jobs:
       - name: run unit tests
         run: |
           pytest
+        if: always()
+
+      - name: Pylint
+        run: |
+          pylint --fail-under=9.9 codestamper
         if: always()
 
       - name: Coverage
