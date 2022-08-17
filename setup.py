@@ -8,7 +8,7 @@ with open("requirements.txt", "r") as f:
 
 setuptools.setup(
     name="codestamper",
-    version="0.1.0",
+    version="0.2.0",
     author="Bogdan Sandoi",
     author_email="bogdan.sandoi@gmail.com",
     description=("Ensure code traceability in ML experiments"),

@@ -1,6 +1,6 @@
 # CodeStamper
 
-![](https://github.com/bmsan/codestamper/blob/main/docs/source/CodeStamper.png)
+![](https://raw.githubusercontent.com/bmsan/codestamper/main/docs/source/CodeStamper.png)
 
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=bmsan_codestamper&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=bmsan_codestamper)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=bmsan_codestamper&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=bmsan_codestamper)
@@ -32,7 +32,7 @@ When running ML experiments one would want to be able to replicate a past experi
 ## 1.2. Installing
 
 ```bash
-pip install CodeStamper
+pip install codestamper
 ```
 ## 1.3. Examples
 
@@ -56,6 +56,7 @@ GitStamp().log_state('./experiment/code_log', modified_as_patch=True, unpushed_a
 |--🗎 unpushed<git-commit>-<git-commit>.patch
 |--🗎 pip-packages.txt
 |--🗎 conda_env.yaml
+|--🗎 poetry.lock
 ```
 - code_state.json
 ```json
@@ -112,3 +113,15 @@ git checkout <last_pushed_commit_hash>
 git apply unpushed<last_pushed_commit_hash>-<last_unpushed_commit_hash>.patch
 ```
 
+- `pip-packages.txt`
+
+Contains a list of pip packages and their versions as seen by the pip freeze command. If the project is using conda or poetry using the env files generate for them is prefered.
+
+- `conda_env.yaml`
+
+If Conda is used, this file will be present and will contain the exported Conda env in yaml format.
+The enviroment can be recreated using : `conda env create -n ENVNAME --file conda_env.yml`
+
+- `poetry.lock`
+
+The file will be generated if the project is using poetry as package manager.

@@ -1,9 +1,9 @@
-import contextlib
 import os
 import platform
 from datetime import datetime
 import json
 import sys
+import contextlib
 
 try:
     import pwd  # Used to get username if os.getlogin fails
@@ -11,7 +11,7 @@ except ImportError:
     pass
 
 from typing import List, Union
-from .pythonenv import PipEnv, CondaEnv
+from .pythonenv import PipEnv, CondaEnv, PoetryEnv
 from .gitutils import Git
 
 
@@ -34,10 +34,9 @@ def get_username():
 
 def get_hostname():
     """Retrivies node hostname"""
-    try:
+    with contextlib.suppress(Exception):
         return platform.node()
-    except Exception:
-        return None
+    return None
 
 
 class GitStamp:
@@ -47,6 +46,7 @@ class GitStamp:
         self.git = Git(git_cmd)
         self.pip = PipEnv()
         self.conda = CondaEnv()
+        self.poetry = PoetryEnv()
 
     def raise_if_dirty(
         self, modified: bool = True, untracked: Union[bool, List[str]] = True
@@ -131,12 +131,16 @@ class GitStamp:
         node_info=True,
         pip_info=True,
         conda_info=True,
+        poetry_info=True,
     ):
         """Logs Code & Env State.
         Generates a folder containing logged information.
           - code_state.json - contains git/platform/python information
           - mod.patch - contains diff between last commit and current code
           - unpatched<>-<>.patch - contains diff between last commit and last pushed commit
+          - pip-packages.txt
+          - conda_env.yaml - if conda is present
+          - poetry.lock - if poetry is present
 
         Parameters
         ----------
@@ -155,6 +159,9 @@ class GitStamp:
             Information related to python packages gathered through pip, by default True
         conda_info
             Information related to python packages in conda envs, by default True
+        conda_info
+            Information related to python packages in poetry envs, by default True
+
         """
         os.makedirs(folder, exist_ok=True)
         info = self.get_state_info(git_usr, node_info, pip_info, conda_info)
@@ -171,3 +178,5 @@ class GitStamp:
             self.pip.save_raw(os.path.join(folder, "pip-packages.txt"))
         if conda_info and self.conda.activated:
             self.conda.save_raw(os.path.join(folder, "conda_env.yaml"))
+        if poetry_info and self.poetry.activated:
+            self.poetry.save_raw(os.path.join(folder, PoetryEnv.ENV_FILE))
