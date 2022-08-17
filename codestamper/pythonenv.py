@@ -1,4 +1,5 @@
 import os
+import pathlib
 import sys
 import subprocess
 from abc import ABC, abstractmethod
@@ -69,7 +70,6 @@ class CondaEnv(Env):
         self.conda_deps = conda_deps
         self.pip_deps = pip_deps
 
-
     def get_env_info(self):
         self.load_env()
         return (
@@ -82,6 +82,26 @@ class CondaEnv(Env):
             if self.activated
             else None
         )
+
+
+class PoetryEnv(Env):
+    """Retrives Poetry package information"""
+
+    ENV_FILE = "poetry.lock"
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.activated = os.path.exists(PoetryEnv.ENV_FILE)
+        self.raw = ""
+
+    def load_env(self):
+        super().load_env()
+        if not self.activated:
+            return
+        self.raw = pathlib.Path(PoetryEnv.ENV_FILE).read_text(encoding="utf-8")
+
+    def get_env_info(self):
+        return {"present": self.activated}
 
 
 class PipEnv(Env):

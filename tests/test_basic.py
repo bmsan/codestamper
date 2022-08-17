@@ -1,8 +1,9 @@
 import pytest
-from codestamper import GitStamp, GitNotFound, DirtyWorkspace, LastPushedCommitNA
+import pathlib
 import os
 import subprocess
 import shutil
+from codestamper import GitStamp, GitNotFound, DirtyWorkspace, LastPushedCommitNA
 
 # hash
 # get_modified
@@ -65,6 +66,16 @@ def test_B(git_env1):
     assert os.path.exists("./state/mod.patch")
     assert os.path.exists("./state/code_state.json")
     assert os.path.exists("./state/pip-packages.txt")
+    assert not os.path.exists("./state/poetry.lock")
 
     with pytest.raises(LastPushedCommitNA):
         stamp.log_state("./state", unpushed_as_patch=True)
+
+    poetry_fname = "poetry.lock"
+    poetry_dst = os.path.join("./state2/", poetry_fname)
+
+    pathlib.Path(poetry_fname).write_text("placeholder")
+
+    GitStamp().log_state("./state2")
+    assert os.path.exists(poetry_dst)
+    assert pathlib.Path(poetry_dst).read_text() == "placeholder"
