@@ -4,6 +4,7 @@ from datetime import datetime
 import json
 import sys
 import contextlib
+import subprocess
 
 try:
     import pwd  # Used to get username if os.getlogin fails
@@ -17,6 +18,10 @@ from .gitutils import Git
 
 class DirtyWorkspace(Exception):
     """Git Workspace contains modified files and/or untracked files"""
+
+
+class GitUserNotSet(Exception):
+    """Raised when git user/email is not found"""
 
 
 def get_username():
@@ -100,7 +105,12 @@ class GitStamp:
         git = state["git"] = {}
         git["hash"] = self.git.get_hash()
         if git_usr:
-            git["user"], git["email"] = self.git.git_user_config()
+            try:
+                git["user"], git["email"] = self.git.git_user_config()
+            except subprocess.CalledProcessError as e:
+                raise GitUserNotSet(
+                    "Could not retrieve git user.name and email. Either set them in your git config or call log_state(...) with git_usr set to False"
+                ) from e
         if node_info:
             node = state["node"] = {}
             node["username"] = get_username()

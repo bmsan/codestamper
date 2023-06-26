@@ -47,7 +47,12 @@ class CondaEnv(Env):
         super().load_env()
         if not self.activated:
             return
-        data = subprocess.check_output(["conda", "env", "export"]).decode("utf-8")
+        cmd = ["conda", "env", "export"]
+        try:
+            data = subprocess.check_output(cmd).decode("utf-8")
+        except FileNotFoundError:
+            # On Windows conda command is seen only for shell=True
+            data = subprocess.check_output(' '.join(cmd), shell=True).decode("utf-8")
         self.raw = data
         self.parsed = yaml.safe_load(data)
         self._interpret_deps(self.parsed["dependencies"])
