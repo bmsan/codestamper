@@ -53,6 +53,11 @@ class CondaEnv(Env):
         except FileNotFoundError:
             # On Windows conda command is seen only for shell=True
             data = subprocess.check_output(' '.join(cmd), shell=True).decode("utf-8")
+        # workaround for pycharm terminal on windows which adds extra non-printable chars
+        escape_char = '\x1b'
+        if escape_char in data:
+            data = data[:data.index(escape_char)]
+
         self.raw = data
         self.parsed = yaml.safe_load(data)
         self._interpret_deps(self.parsed["dependencies"])
